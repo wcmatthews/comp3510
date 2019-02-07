@@ -11,6 +11,7 @@
 
 
 #include "common.h"
+#include "math.h"
 
 /*****************************************************************************\
 *                             Global data types                               *
@@ -21,7 +22,7 @@
 /*****************************************************************************\
 *                             Global definitions                              *
 \*****************************************************************************/
-
+#define  OUT_OF_BOUNDS 2147483648
 
 
 
@@ -79,19 +80,30 @@ int main (int argc, char **argv) {
  * Function: Monitor Devices and process events                          *
  \***********************************************************************/
 void Control(void){
-  int i;
+  int i = 1;
+  int j = 0;
   Event e; //Added
 
   Status LastStatus=0;
+
   while (1) {
     printf("%10.3f   Flags = %d - \n ", Now(), Flags);
     sleep(1); // Just to slow down to have time to see Flags
-    if (Flags != LastStatus){
-      LastStatus = Flags;
-      //Flags = Flags
-      printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
-	     Flags);
-       //DisplayEvent()
+    while (Flags != 0){
+        while (i != OUT_OF_BOUNDS) {
+            if (flags & i) {
+            printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
+            Flags);
+            e = BufferLastEvent[j];
+            //DisplayEvent(e.msg, e); Think this is the format for display event
+            Server(&e);
+            flags = flags ^ (1 << e.DeviceID); // reset Flags
+            //LastStatus = Flags;
+        }
+          i << 1;
+          j++;
+      }
+      i = 0;
     }
   }
 }
