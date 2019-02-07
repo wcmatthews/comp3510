@@ -80,8 +80,9 @@ int main (int argc, char **argv) {
  * Function: Monitor Devices and process events                          *
  \***********************************************************************/
 void Control(void){
-  int i = 1;
-  int j = 0;
+  int i = 1;//Actual flag value
+  int j = 0;//Flag bit location
+  int tracker = 0; //ID of last event to track missed events, unsure if events start at 0 or 1
   Event e; //Added
 
   Status LastStatus=0;
@@ -95,15 +96,20 @@ void Control(void){
             printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
             Flags);
             e = BufferLastEvent[j];
-            //DisplayEvent(e.msg, e); Think this is the format for display event
+            DisplayEvent(e.msg, e); //Think this is the format for display event
             Server(&e);
             flags = flags ^ (1 << e.DeviceID); // reset Flags
             //LastStatus = Flags;
+            if (e.EventID > tracker) {
+              //missed event
+            }
+            tracker++;
         }
           i << 1;
           j++;
       }
       i = 0;
+      j = 0;
     }
   }
 }
