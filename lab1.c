@@ -80,36 +80,45 @@ int main (int argc, char **argv) {
  * Function: Monitor Devices and process events                          *
  \***********************************************************************/
 void Control(void){
-  int i = 1;//Actual flag value
-  int j = 0;//Flag bit location
-  int tracker = 0; //ID of last event to track missed events, unsure if events start at 0 or 1
+  int i = 1;// Flag Bit Location
+  int j = 0;// Denotes location in BufferLastEvent[]
+  int temp = 0; // Holds Value of flags so Flags can be operated on
   Event e; //Added
 
-  Status LastStatus=0;
+  //Status LastStatus=0; most likely uneeded with addition of temp
 
   while (1) {
     printf("%10.3f   Flags = %d - \n ", Now(), Flags);
     sleep(1); // Just to slow down to have time to see Flags
     while (Flags != 0){
-        while (i != OUT_OF_BOUNDS) {
-            if (flags & i) {
+	temp = Flags;
+        while (i <= 8) { //easier to follow than uppr limit. Biaz said only 8 devices(bits) used
+	    //printf("%d\n", i);
+            if (Flags & 1) {
             printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
             Flags);
             e = BufferLastEvent[j];
-            DisplayEvent(e.msg, e); //Think this is the format for display event
+            // startTime = e.When();
+            DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
+            // responseTime = Now() - startTime;
             Server(&e);
-            flags = flags ^ (1 << e.DeviceID); // reset Flags
-            //LastStatus = Flags;
-            if (e.EventID > tracker) {
+	    // turnaroundTime = Now() - startTime;
+	    // add processed event to an array? Associate proc.Event with the device?
+            Flags = (temp ^ (int) pow(2, i));
+           // if (e.EventID > tracker) {
               //missed event
-            }
-            tracker++;
+            //}
+            //tracker++;
+            j++;
+            i = 0;
         }
-          i << 1;
-          j++;
+	Flags = Flags >> 1;
+        i++;
+         // i << 1;
+         // j++;
       }
-      i = 0;
-      j = 0;
+     // i = 0;
+     // j = 0;
     }
   }
 }
