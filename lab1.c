@@ -89,38 +89,33 @@ void Control(void){
 
   while (1) {
     printf("%10.3f   Flags = %d - \n ", Now(), Flags);
-    sleep(1); // Just to slow down to have time to see Flags
-    while (Flags != 0){
-      	//temp = Flags;
-        while (i <= 128) { //easier to follow than uppr limit. Biaz said only 8 devices(bits) used
-            if (Flags & i) {
+    //sleep(1); // Just to slow down to have time to see Flags
+    if (Flags != 0){
+      	temp = Flags; //Hold current flag values
+	Flags = 0; //Clear to hold next flag values after loop below
+	//i = 0;
+        j = 0;
+        while (temp != 0) { 
+            if (temp & 1) {
                printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
                       Flags);
-	       int loc = log2(i);
-	       printf("\n>>>>>>>>>>>> %d", loc); //Used for debugging
-               e = BufferLastEvent[loc];
+               e = BufferLastEvent[j];
                // startTime = e.When();
                DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
                // responseTime = Now() - startTime;
                Server(&e);
 	       // turnaroundTime = Now() - startTime;
 	       // add processed event to an array? Associate proc.Event with the device?
-               //Flags = (temp ^ (int) pow(2, i));
-               Flags = Flags ^ (1 << e.DeviceID);
-	       printf("\nFLAGS: %d\n", Flags);
+               //Flags = Flags ^ (1 << e.DeviceID);
               // 
               // if (e.EventID > tracker) {
               //missed event
                //}
-               //tracker++;
-               
-               j++; 
-               
+               //tracker++;        
             }
-          i << 1;
+          temp = temp >> 1;
+	  j++;
       }
-      i = 0;
-      j = 0;
     }
   }
 }
