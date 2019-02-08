@@ -88,7 +88,7 @@ void Control(void){
 	float startTime;
 	float responseTime;
 	float turnaroundTime;
-
+	int totalEvents = 0; // used to calculate averages
 	float averageResponseTime;
 	float averageTurnaroundTime;
 	
@@ -114,9 +114,10 @@ void Control(void){
 	        turnaroundTime = Now() - startTime;
 		averageResponseTime += responseTime;
 		averageTurnaroundTime += turnaroundTime;
+		totalEvents++;
 	       // add processed event to an array? Associate proc.Event with the device?
                //Flags = Flags ^ (1 << e.DeviceID);
-              printf("ART: %10.3f ATT: %10.3f", averageResponseTime, averageTurnaroundTime); 
+              printf("ART: %10.3f ATT: %10.3f", (averageResponseTime/totalEvents), (averageTurnaroundTime/totalEvents)); 
               // if (e.EventID > tracker) {
               //missed event
                //}
