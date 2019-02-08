@@ -85,10 +85,18 @@ void Control(void){
   int temp = 0; // Holds Value of flags so Flags can be operated on
   Event e; //Added
 
+	float startTime;
+	float responseTime;
+	float turnaroundTime;
+
+	float averageResponseTime;
+	float averageTurnaroundTime;
+	
+
   //Status LastStatus=0; most likely uneeded with addition of temp
 
   while (1) {
-    printf("%10.3f   Flags = %d - \n ", Now(), Flags);
+  // printf("%10.3f   Flags = %d - \n ", Now(), Flags);
     //sleep(1); // Just to slow down to have time to see Flags
     if (Flags != 0){
       	temp = Flags; //Hold current flag values
@@ -97,17 +105,18 @@ void Control(void){
         j = 0;
         while (temp != 0) { 
             if (temp & 1) {
-               printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
-                      Flags);
+              printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(), Flags);
                e = BufferLastEvent[j];
-               // startTime = e.When();
+                startTime = e.When;
                DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
-               // responseTime = Now() - startTime;
+                responseTime = Now() - startTime;
                Server(&e);
-	       // turnaroundTime = Now() - startTime;
+	        turnaroundTime = Now() - startTime;
+		averageResponseTime += responseTime;
+		averageTurnaroundTime += turnaroundTime;
 	       // add processed event to an array? Associate proc.Event with the device?
                //Flags = Flags ^ (1 << e.DeviceID);
-              // 
+              printf("ART: %10.3f ATT: %10.3f", averageResponseTime, averageTurnaroundTime); 
               // if (e.EventID > tracker) {
               //missed event
                //}
