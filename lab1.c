@@ -91,34 +91,36 @@ void Control(void){
     printf("%10.3f   Flags = %d - \n ", Now(), Flags);
     sleep(1); // Just to slow down to have time to see Flags
     while (Flags != 0){
-	temp = Flags;
-        while (i <= 8) { //easier to follow than uppr limit. Biaz said only 8 devices(bits) used
-	    //printf("%d\n", i);
-            if (Flags & 1) {
-            printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
-            Flags);
-            e = BufferLastEvent[j];
-            // startTime = e.When();
-            DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
-            // responseTime = Now() - startTime;
-            Server(&e);
-	    // turnaroundTime = Now() - startTime;
-	    // add processed event to an array? Associate proc.Event with the device?
-            Flags = (temp ^ (int) pow(2, i));
-           // if (e.EventID > tracker) {
+      	//temp = Flags;
+        while (i <= 128) { //easier to follow than uppr limit. Biaz said only 8 devices(bits) used
+            if (Flags & i) {
+               printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(),
+                      Flags);
+	       int loc = log2(i);
+	       printf("\n>>>>>>>>>>>> %d", loc); //Used for debugging
+               e = BufferLastEvent[loc];
+               // startTime = e.When();
+               DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
+               // responseTime = Now() - startTime;
+               Server(&e);
+	       // turnaroundTime = Now() - startTime;
+	       // add processed event to an array? Associate proc.Event with the device?
+               //Flags = (temp ^ (int) pow(2, i));
+               Flags = Flags ^ (1 << e.DeviceID);
+	       printf("\nFLAGS: %d\n", Flags);
+              // 
+              // if (e.EventID > tracker) {
               //missed event
-            //}
-            //tracker++;
-            j++;
-            i = 0;
-        }
-	Flags = Flags >> 1;
-        i++;
-         // i << 1;
-         // j++;
+               //}
+               //tracker++;
+               
+               j++; 
+               
+            }
+          i << 1;
       }
-     // i = 0;
-     // j = 0;
+      i = 0;
+      j = 0;
     }
   }
 }
