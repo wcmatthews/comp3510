@@ -37,13 +37,19 @@
 /*****************************************************************************\
 *                                  Global data                                *
 \*****************************************************************************/
+int avgResponseTimes;
+int avgTurnTimes;
 
+
+<<<<<<< HEAD
 int totalMissedEvents;
 int totalMissedEventsPerDevice[31];
 int totalEventsPerDevice[31];
 float missedPercentage[31];
 int nextEventNumber[31];
 float missedAvg;
+=======
+>>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
 
 /*****************************************************************************\
 *                               Function prototypes                           *
@@ -86,31 +92,39 @@ void Control(void){
   int i = 1;// Flag Bit Location
   int j = 0;// Denotes location in BufferLastEvent[]
   int temp = 0; // Holds Value of flags so Flags can be operated on
-  int tracker = 0;
   Event e; //Added
 
 	float startTime;
 	float responseTime;
 	float turnaroundTime;
-	int totalProcessedEvents = 0; // used to calculate averages
+	int totalEvents = 0; // used to calculate averages
 	float averageResponseTime;
 	float averageTurnaroundTime;
+<<<<<<< HEAD
         float missedEvents;
         int totalEvents;
  
   //      float missedAvg;
+=======
+>>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
 	
 
+  //Status LastStatus=0; most likely uneeded with addition of temp
+
   while (1) {
+  // printf("%10.3f   Flags = %d - \n ", Now(), Flags);
     //sleep(1); // Just to slow down to have time to see Flags
     if (Flags != 0){
       	temp = Flags; //Hold current flag values
 	Flags = 0; //Clear to hold next flag values after loop below
+	//i = 0;
         j = 0;
         missedAvg = 0;
         while (temp != 0) { 
             if (temp & 1) {
+              printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(), Flags);
                e = BufferLastEvent[j];
+<<<<<<< HEAD
                startTime = e.When;
                // 
                if (nextEventNumber[j] != e.EventID) {
@@ -119,12 +133,16 @@ void Control(void){
                   totalMissedEventsPerDevice[j] += (e.EventID - (nextEventNumber[j]));
                }
 
+=======
+                startTime = e.When;
+>>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
                DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
-               responseTime = Now() - startTime;
+                responseTime = Now() - startTime;
                Server(&e);
 	        turnaroundTime = Now() - startTime;
 		averageResponseTime += responseTime;
 		averageTurnaroundTime += turnaroundTime;
+<<<<<<< HEAD
 		totalProcessedEvents++;
 		printf("\nTOTALPROCESSEDEVENTS %d", totalProcessedEvents);
                 totalEventsPerDevice[j] += 1;
@@ -136,6 +154,16 @@ void Control(void){
        
                missedAvg = (totalMissedEvents/totalEvents);
                missedPercentage[j] = (totalMissedEventsPerDevice[j]/totalEventsPerDevice[j]);     
+=======
+		totalEvents++;
+	       // add processed event to an array? Associate proc.Event with the device?
+               //Flags = Flags ^ (1 << e.DeviceID);
+              printf("Average Response Time: %10.3f Average Turnaround Time: %10.3f", (averageResponseTime/totalEvents), (averageTurnaroundTime/totalEvents)); 
+              // if (e.EventID > tracker) {
+              //missed event
+               //}
+               //tracker++;        
+>>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
             }
           temp = temp >> 1;
 	  j++;
@@ -152,7 +180,5 @@ void Control(void){
 *           not yet processed (Server() function not yet called)        *
 \***********************************************************************/
 void BookKeeping(void){
-  printf("Average \% of missed events: %d", missedAvg);
   printf("\n >>>>>> Done\n");
 }
-
