@@ -41,15 +41,14 @@ int avgResponseTimes;
 int avgTurnTimes;
 
 
-<<<<<<< HEAD
+
 int totalMissedEvents;
 int totalMissedEventsPerDevice[31];
 int totalEventsPerDevice[31];
 float missedPercentage[31];
 int nextEventNumber[31];
 float missedAvg;
-=======
->>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
+
 
 /*****************************************************************************\
 *                               Function prototypes                           *
@@ -100,16 +99,9 @@ void Control(void){
 	int totalEvents = 0; // used to calculate averages
 	float averageResponseTime;
 	float averageTurnaroundTime;
-<<<<<<< HEAD
-        float missedEvents;
-        int totalEvents;
- 
-  //      float missedAvg;
-=======
->>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
-	
 
-  //Status LastStatus=0; most likely uneeded with addition of temp
+        int missedEvents;
+        int totalEvents;
 
   while (1) {
   // printf("%10.3f   Flags = %d - \n ", Now(), Flags);
@@ -120,50 +112,40 @@ void Control(void){
 	//i = 0;
         j = 0;
         missedAvg = 0;
-        while (temp != 0) { 
+        while (temp != 0) {
             if (temp & 1) {
               printf("\n >>>>>>>>>  >>> When: %10.3f  Flags = %d\n", Now(), Flags);
                e = BufferLastEvent[j];
-<<<<<<< HEAD
                startTime = e.When;
-               // 
                if (nextEventNumber[j] != e.EventID) {
 		  totalMissedEvents += e.EventID - (nextEventNumber[j]);
                   printf("\nTOTAL MISSED %d", totalMissedEvents);
                   totalMissedEventsPerDevice[j] += (e.EventID - (nextEventNumber[j]));
                }
 
-=======
                 startTime = e.When;
->>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
+
                DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
                 responseTime = Now() - startTime;
                Server(&e);
 	        turnaroundTime = Now() - startTime;
 		averageResponseTime += responseTime;
 		averageTurnaroundTime += turnaroundTime;
-<<<<<<< HEAD
+
 		totalProcessedEvents++;
 		printf("\nTOTALPROCESSEDEVENTS %d", totalProcessedEvents);
                 totalEventsPerDevice[j] += 1;
 		nextEventNumber[j] = e.EventID++;
    		totalEvents = totalProcessedEvents + totalMissedEvents;
                 printf("\nTOTAL EVENTS %d", totalEvents);
-//              printf("ART: %10.3f ATT: %10.3f", (averageResponseTime/totalEvents), 
- //                   (averageTurnaroundTime/totalEvents)); 
-       
+//              printf("ART: %10.3f ATT: %10.3f", (averageResponseTime/totalEvents),
+ //                   (averageTurnaroundTime/totalEvents));
+
                missedAvg = (totalMissedEvents/totalEvents);
-               missedPercentage[j] = (totalMissedEventsPerDevice[j]/totalEventsPerDevice[j]);     
-=======
+
 		totalEvents++;
-	       // add processed event to an array? Associate proc.Event with the device?
-               //Flags = Flags ^ (1 << e.DeviceID);
-              printf("Average Response Time: %10.3f Average Turnaround Time: %10.3f", (averageResponseTime/totalEvents), (averageTurnaroundTime/totalEvents)); 
-              // if (e.EventID > tracker) {
-              //missed event
-               //}
-               //tracker++;        
->>>>>>> bb67bfd9f63f55b72e4b20fab0b667632b2c63ce
+              printf("Average Response Time: %10.3f Average Turnaround Time: %10.3f", (averageResponseTime/totalEvents), (averageTurnaroundTime/totalEvents));
+
             }
           temp = temp >> 1;
 	  j++;
