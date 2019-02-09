@@ -43,7 +43,7 @@ int totalMissedEventsPerDevice[31];
 int totalEventsPerDevice[31];
 float missedPercentage[31];
 int nextEventNumber[31];
-int missedAvg;
+float missedAvg;
 
 /*****************************************************************************\
 *                               Function prototypes                           *
@@ -95,7 +95,7 @@ void Control(void){
 	int totalProcessedEvents = 0; // used to calculate averages
 	float averageResponseTime;
 	float averageTurnaroundTime;
-        int missedEvents;
+        float missedEvents;
         int totalEvents;
  
   //      float missedAvg;
@@ -107,13 +107,16 @@ void Control(void){
       	temp = Flags; //Hold current flag values
 	Flags = 0; //Clear to hold next flag values after loop below
         j = 0;
+        missedAvg = 0;
         while (temp != 0) { 
             if (temp & 1) {
                e = BufferLastEvent[j];
                startTime = e.When;
+               // 
                if (nextEventNumber[j] != e.EventID) {
-		  totalMissedEvents += e.EventID - nextEventNumber[j];
-                  totalMissedEventsPerDevice[j] += e.EventID - nextEventNumber[j];
+		  totalMissedEvents += e.EventID - (nextEventNumber[j]);
+                  printf("\nTOTAL MISSED %d", totalMissedEvents);
+                  totalMissedEventsPerDevice[j] += (e.EventID - (nextEventNumber[j]));
                }
 
                DisplayEvent('a', &e); //char arg arbitrary, used for debugging purposes per Biaz
@@ -123,10 +126,11 @@ void Control(void){
 		averageResponseTime += responseTime;
 		averageTurnaroundTime += turnaroundTime;
 		totalProcessedEvents++;
+		printf("\nTOTALPROCESSEDEVENTS %d", totalProcessedEvents);
                 totalEventsPerDevice[j] += 1;
 		nextEventNumber[j] = e.EventID++;
    		totalEvents = totalProcessedEvents + totalMissedEvents;
-	       // add processed event to an array? Associate proc.Event with the device?
+                printf("\nTOTAL EVENTS %d", totalEvents);
 //              printf("ART: %10.3f ATT: %10.3f", (averageResponseTime/totalEvents), 
  //                   (averageTurnaroundTime/totalEvents)); 
        
